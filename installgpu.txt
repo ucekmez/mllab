@@ -1,0 +1,53 @@
+# uninstall previously installed cuda and nvidia versions (if any exists)
+sudo /usr/local/cuda-9.1/bin/uninstall_cuda_X:Y.pl    # (X.Y should be the version number. Eg. 9.0)
+sudo /usr/bin/nvidia-uninstall
+
+# install correct kernel headers
+sudo apt-get install linux-headers-$(uname -r)
+
+# fetch and install latest nvidia driver
+wget http://us.download.nvidia.com/tesla/390.46/nvidia-diag-driver-local-repo-ubuntu1604-390.46_1.0-1_amd64.deb
+sudo dpkg -i nvidia-diag-driver-local-repo-ubuntu1604-390.46_1.0-1_amd64.deb
+sudo apt-get update
+sudo apt-get install nvidia-390 nvidia-390-dev
+
+# fetch cuda installation toolkit runfile
+wget https://developer.nvidia.com/compute/cuda/9.1/Prod/local_installers/cuda_9.1.85_387.26_linux
+
+# before the installation make sure that lightdm (if exists) is stopped
+sudo service lightdm stop
+
+# run the installation file
+mv cuda_9.1.85_387.26_linux cuda_9.1.85_387.26_linux.run
+sudo sh cuda_9.1.85_387.26_linux.run
+
+# make sure you will not install NVIDIA driver when it asks (say no)
+
+# reboot
+sudo reboot
+
+
+# after installing the drivers and docker, install nvidia-docker to use cuda for your containers
+# https://github.com/NVIDIA/nvidia-docker
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update
+sudo apt-get install -y nvidia-docker2
+sudo pkill -SIGHUP dockerd
+
+# test your installation whether it succeeded
+docker run --runtime=nvidia --rm nvidia/cuda nvidia-smi
+
+# test it with ML notebook
+sudo docker pull ucekmez/notebook-gpu
+sudo nvidia-docker run --rm -i -v pwd:/volume -p 8888:8888 ucekmez/notebook-gpu
+
+# add new user and attach it to docker usergroup so that it does not have to use 'sudo'
+sudo adduser user_name
+sudo gpasswd -a user_name docker
+
+# list available docker images. Note the image IDs
+sudo docker images
+# delete docker images
+sudo docker rmi -f image_id
