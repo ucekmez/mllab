@@ -1,0 +1,45 @@
+#!/bin/sh
+
+###### Ugur Cekmez <ugur.cekmez@tubitak.gov.tr>
+
+
+# enter default values
+workspace=$(pwd)
+pass='pass'
+port='8888'
+
+printf 'Attach workspace with path [default: %s] : ' $(pwd)
+read -r workspacepath
+
+if [ $workspacepath ]; then
+  workspace=$(printf '%s' $workspacepath)
+fi
+
+printf 'Enter notebook password [default: %s] : ' $pass
+read -r notebookpass
+
+if [ $notebookpass ]; then
+  while [ $notebookpass -eq $notebookpass 2>/dev/null ]
+  do
+    printf 'Notebook passoword cannot contain only integers'
+    printf 'Please enter a new password [default: %s] : ' $pass
+    read -r notebookpass
+  done
+    pass=$(printf '%s' $notebookpass)
+fi
+
+printf 'Enter notebook port [default: 8888] : '
+read -r notebookport
+
+if [ $notebookport ]; then
+  port=$(printf '%s' $notebookport)
+fi
+
+docker pull ucekmez/notebook
+
+printf "\nNotebook is now live at http://%s:%s [pass: %s]\n" $(ip route get 8.8.8.8 | awk '{print $NF; exit}') $port $pass
+printf "Notebook can be killed by running: \n\n"
+printf "docker kill "
+
+nvidia-docker run -d -p $port:8888 -v $workspace:/workspace/data --restart always \
+ucekmez/notebook --NotebookApp.token="$pass"

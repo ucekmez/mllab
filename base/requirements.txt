@@ -21,3 +21,4 @@ jupyter
 jupyterlab
 jupyterhub
 jupyterlab_widgets
+gensim

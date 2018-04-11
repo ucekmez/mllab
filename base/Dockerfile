@@ -1,13 +1,10 @@
 # setup base
 FROM ubuntu:16.04
 MAINTAINER Ugur Cekmez <ugur.cekmez@tubitak.gov.tr>
+
 RUN apt-get update
 
-RUN apt-get install -y python3
-RUN apt-get install -y python3-dev
-RUN apt-get install -y python3-pip
-RUN apt-get install -y python3-wheel
-RUN apt-get install -y python3-numpy
+RUN apt-get install -y python3 python3-pip
 RUN apt-get install -y git-core
 RUN apt-get install -y curl
 RUN apt-get install -y wget
