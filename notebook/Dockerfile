@@ -1,5 +1,6 @@
 # setup base
 FROM ucekmez/mlbase
+FROM tensorflow/tensorflow:latest-gpu
 MAINTAINER Ugur Cekmez <ugur.cekmez@tubitak.gov.tr>
 
 # change workspace
