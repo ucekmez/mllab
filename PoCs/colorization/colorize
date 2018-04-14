@@ -1,0 +1,14 @@
+#!/bin/sh
+
+gpu=$1
+
+
+docker pull ucekmez/colorization
+
+if [ $gpu ]; then
+  if [ $gpu -eq 'gpu' ]; then
+    nvidia-docker run --rm -v $workspace:/data ucekmez/colorization
+  fi
+else
+  docker run --rm -v $workspace:/data ucekmez/colorization
+fi

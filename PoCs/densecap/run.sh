@@ -10,13 +10,11 @@ printf '\n\nImages in this dir :'
   printf '\n%s' $(ls /data/*.jpeg | sed -e 's/\/.*\///g')
 }
 
-printf "\n\nEnter image name to colorize it: "
+printf "\n\nEnter image name to caption it: "
 read image
 
 outfilename="${image%.*}"
 outextension="${image##*.}"
 outfile="${outfilename}_out.${outextension}"
 
-/root/torch/install/bin/th colorize.lua /data/$image /data/$outfile
-
-printf "\nColorized image have been saved as %s\n\n" $outfile
+/root/torch/install/bin/th run_model.lua -input_image /data/$image -output_dir /data/ -gpu -1

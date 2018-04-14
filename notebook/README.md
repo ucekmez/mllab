@@ -1,3 +1,3 @@
 # how to run
 
-sudo docker run --rm -v $(pwd):/workspace/data -p 8887:8887 ucekmez/notebook
+docker run --rm -v $(pwd):/workspace/data -p 8888:8888 ucekmez/notebook2
